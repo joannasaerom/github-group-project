@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Github Users</title>
+    <link rel="stylesheet" href="examples/shared/css/base.css" />
+  </head>
+  <body>
+    <h1>Github Users</h1>
+    <div id="container">
+      <p>
+        To install React, follow the instructions on
+        <a href="https://github.com/facebook/react/">GitHub</a>.
+      </p>
+      <p>
+        If you can see this, React is <strong>not</strong> working right.
+        If you checked out the source from GitHub make sure to run <code>grunt</code>.
+      </p>
+    </div>
+
+    <script src="build/react.js"></script>
+    <script src="build/react-dom.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+
+      // ExampleApplicationFactory to do the same job over and over
+      var ExampleApplication = React.createClass({
+        render: function() {
+
+          var arr = this.props.arr
+
+          return React.createElement(
+            'ul',
+            null,
+            arr.map(item => React.createElement(
+              'li',
+              { key: item.id},
+              item['html_url']
+            ))
+          );
+
+        }
+      });
+
+      // Call React.createFactory instead of directly call ExampleApplication({...}) in React.render
+      var ExampleApplicationFactory = React.createFactory(ExampleApplication);
+      var arr = []
+
+      // Call API, get response, send it to the factory and render
+      $.getJSON('https://api.github.com/search/users?q=location:%3Eportland+followers:%3E1000+language:%3Ejavascript').then((data) => {
+            var items = data['items'];
+            items.forEach(function(d) {
+              arr.push(d);
+            })
+            ReactDOM.render(
+              ExampleApplicationFactory({arr: arr}),
+              document.getElementById('container')
+            );
+          });
+
+
+
+
+    </script>
+  </body>
+</html>
